@@ -8,6 +8,7 @@ from .models import (
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
+from rest_framework.renderers import TemplateHTMLRenderer
 
 from notifications.utils import notify
 from notifications import default_settings as notifs_settings
@@ -59,6 +60,7 @@ class ChatSessionView(APIView):
 
 class ChatSessionMessageView(APIView):
     """Create/Get Chat session messages."""
+    renderer_classes = [TemplateHTMLRenderer]
 
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -69,11 +71,12 @@ class ChatSessionMessageView(APIView):
         chat_session = ChatSession.objects.get(uri=uri)
         messages = [chat_session_message.to_json() 
             for chat_session_message in chat_session.messages.all()]
+        template = "template.html"
 
         return Response({
             'id': chat_session.id, 'uri': chat_session.uri,
             'messages': messages
-        })
+        }, template_name=template)
 
     def post(self, request, *args, **kwargs):
         """create a new message in a chat session."""
