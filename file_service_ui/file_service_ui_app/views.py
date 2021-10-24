@@ -15,7 +15,7 @@ def open_page(request):
     return render(request, "form.html", {'form': form})
 
 def send_file_show_result(request):
-    url = "http://localhost:8030/compress/"
+    url = "http://localhost:8000/process_file/compress/"
     routing_key = str(random.randint(1000, 9999))
     headers = {'x-routing-key' : routing_key}
     mess = "defaultnya fail"
