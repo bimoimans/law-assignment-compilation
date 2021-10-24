@@ -41,7 +41,7 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
 
               var on_message_display = function(m) {
                 console.log('message received');
-                $('#jam').append("<br>".concat(m.body).concat("</br>"));
+                $('#chat_message').append("<br>".concat(m.body).concat("</br>"));
                 //$('#jam').append(m.body);
                 //$('#jam').append("</b>");
               };
@@ -94,6 +94,7 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
             <p class="w3-border w3-padding-large w3-padding-64 w3-center">AD</p>
         </div>
     </div>
+    <div id="chat_message"></div>
 
   <footer id="myFooter">
     <div class="w3-container w3-theme-l2 w3-padding-32">
