@@ -128,5 +128,5 @@ STATIC_URL = '/static/'
 
 # notifications settings 
 NOTIFICATIONS_CHANNELS = {
-   'websocket': 'chat.channels.BroadCastWebSocketChannel'
+   'websocket': 'chat_room_app.channels.BroadCastWebSocketChannel'
 }
