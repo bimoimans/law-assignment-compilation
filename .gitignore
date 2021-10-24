@@ -138,4 +138,4 @@ dmypy.json
 cython_debug/
 
 #Testing Media Folder
-*.media/
+*media/
