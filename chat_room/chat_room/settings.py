@@ -131,3 +131,9 @@ STATIC_URL = '/static/'
 NOTIFICATIONS_CHANNELS = {
    'websocket': 'chat_room_app.channels.BroadCastWebSocketChannel'
 }
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
