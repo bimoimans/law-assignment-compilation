@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'chat_room_app',
+    'chat_signin',
 
     'rest_framework',
     'rest_framework.authtoken',
