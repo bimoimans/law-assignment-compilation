@@ -2,10 +2,10 @@ from django.shortcuts import render, resolve_url
 
 # Create your views here.
 def open_signin_page(request):
-    return render(request, "signin.html", {'endpoint': 'http://localhost:8000/auth/token/login/', 'button_text':"sign in"})
+    return render(request, "signin.html", {'endpoint': 'http://localhost:8000/auth/token/login/?format=json', 'button_text':"sign in"})
 
 def open_signup_page(request):
-    return render(request, "signin.html", {'endpoint': 'http://localhost:8000/auth/users/', 'button_text':"sign up"})
+    return render(request, "signin.html", {'endpoint': 'http://localhost:8000/auth/users/?format=json', 'button_text':"sign up"})
 
 def cek_request(request):
     print(request)
