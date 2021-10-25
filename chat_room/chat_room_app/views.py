@@ -1,6 +1,8 @@
 """Views for the chat app."""
 
 from django.contrib.auth import get_user_model
+from django.http.response import HttpResponseRedirect
+import requests
 from .models import (
     ChatSession, ChatSessionMember, ChatSessionMessage, deserialize_user
 )
@@ -12,6 +14,9 @@ from rest_framework.renderers import TemplateHTMLRenderer
 
 from notifications.utils import notify
 from notifications import default_settings as notifs_settings
+
+from django.shortcuts import render, resolve_url
+
 
 class ChatSessionView(APIView):
     """Manage Chat sessions."""
@@ -109,3 +114,20 @@ class ChatSessionMessageView(APIView):
             'status': 'SUCCESS', 'uri': chat_session.uri, 'message': message,
             'user': deserialize_user(user)
         })
+
+def chat_room_list(request):
+    print(request.session.get("access_token",0))
+    chat_list = ChatSession.objects.all()
+    context = {'chat_room_list':chat_list}
+    return render(request, "chatroomlist.html", context)
+
+def handle_create_new_chatroom(request):
+    print(request.session.get("access_token", 0))
+    token = "Token " + request.session.get("access_token", 0)
+    print(token)
+    url = "http://localhost:8000/chat_room/chats/"
+    header = {"Authorization": token}
+    req = requests.post(url,headers=header).json()
+    print(req)
+    uri = req.get("uri", 0)
+    return HttpResponseRedirect(url + str(uri) + "/")
