@@ -5,6 +5,7 @@ from json import dumps
 import pika
 
 from notifications.channels import BaseNotificationChannel
+from pika.spec import Queue
 
 
 class BroadCastWebSocketChannel(BaseNotificationChannel):
@@ -28,11 +29,14 @@ class BroadCastWebSocketChannel(BaseNotificationChannel):
     def notify(self, message):
         """put the message of the RabbitMQ queue."""
         connection, channel = self._connect()
-        print("wtf")
-        print(self.notification_kwargs)
-        uri = self.notification_kwargs['extra_data']['room_name']
-        #TODO Set routing key bind dll
+        uri = self.notification_kwargs['extra_data']['uri']
+        print("im trying to send something")
+        channel.queue_declare(queue=uri)
         channel.exchange_declare(exchange=uri, exchange_type='fanout')
+        channel.queue_bind(exchange=uri, queue=uri)
+        #TODO Set routing key bind dll
         channel.basic_publish(exchange=uri, routing_key='', body=message)
+        channel.queue_unbind(exchange=uri, queue=uri)
 
         connection.close()
+        
