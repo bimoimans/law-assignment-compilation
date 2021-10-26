@@ -108,7 +108,8 @@ class ChatSessionMessageView(APIView):
             'extra_data': {
                 notifs_settings.NOTIFICATIONS_WEBSOCKET_URL_PARAM:
                 chat_session.uri,
-                'message': chat_session_message.to_json()
+                'message': chat_session_message.to_json(),
+                'uri':chat_session.uri,
             }
         }
         notify(**notif_args, channels=['websocket'])

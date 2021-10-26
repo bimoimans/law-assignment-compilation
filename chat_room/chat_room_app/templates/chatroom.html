@@ -54,7 +54,11 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
             <p class="w3-border w3-padding-large w3-padding-64 w3-center">AD</p>
         </div>
     </div>
-    <div id="chat_message"></div>
+    <div id="chat_message">
+    {% for message in messages %}
+      <p>{{ message.message }}</p>
+    {% endfor %}
+  </div>
     <label for="chat">Chat:</label>
     <input type="text" id="chat_box" name="message"><br><br>
     <button id="send_chat" class="float-left submit-button">Send</button>
@@ -106,7 +110,7 @@ function WebSocketTest() {
     if ("WebSocket" in window) {
         var ws_stomp_display     = new WebSocket('ws://127.0.0.1:15674/ws');
         var client_display = Stomp.over(ws_stomp_display);
-        var mq_queue_display    = "/exchange/1706039780/gajadicoba";
+        var mq_queue_display    = "/exchange/{{ uri }}/";
 
         var on_connect_display = function() {
           console.log('connected');
@@ -119,7 +123,8 @@ function WebSocketTest() {
 
         var on_message_display = function(m) {
           console.log('message received');
-          $('#chat_message').append("<br>".concat(m.body).concat("</br>"));
+          const message_obj = JSON.parse(m.body);
+          $('#chat_message').append("<br>".concat(message_obj.message).concat("</br>"));
           //$('#jam').append(m.body);
           //$('#jam').append("</b>");
         };
