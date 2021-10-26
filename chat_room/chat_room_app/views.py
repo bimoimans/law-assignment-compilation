@@ -1,7 +1,8 @@
 """Views for the chat app."""
 
 from django.contrib.auth import get_user_model
-from django.http.response import HttpResponseRedirect, HttpResponse
+from django.http.response import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 import requests
 from .models import (
     ChatSession, ChatSessionMember, ChatSessionMessage, deserialize_user
@@ -10,7 +11,7 @@ from .models import (
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
-from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 
 from notifications.utils import notify
 from notifications import default_settings as notifs_settings
@@ -65,18 +66,18 @@ class ChatSessionView(APIView):
 
 class ChatSessionMessageView(APIView):
     """Create/Get Chat session messages."""
-    renderer_classes = [TemplateHTMLRenderer]
+    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
 
     #permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         """return all messages in a chat session."""
         uri = kwargs['uri']
-        print(request.META)
+        #print(request.META)
         chat_session = ChatSession.objects.get(uri=uri)
         messages = [chat_session_message.to_json() 
             for chat_session_message in chat_session.messages.all()]
-        template = "template.html"
+        template = "chatroom.html"
 
         return Response({
             'id': chat_session.id, 'uri': chat_session.uri,
@@ -87,6 +88,8 @@ class ChatSessionMessageView(APIView):
         """create a new message in a chat session."""
         uri = kwargs['uri']
         message = request.data['message']
+
+        print(request.headers["Authorization"])
 
         user = request.user
         chat_session = ChatSession.objects.get(uri=uri)
@@ -137,10 +140,16 @@ def join_chat(request):
     #TODO
     pass
 
+@csrf_exempt
 def send_message(request):
-    #TODO
-    pass
+    message = request.POST["message"]
+    uri = request.POST["uri"]
+    header = {"Authorization":"Token " + str(request.session.get("access_token",0))}
+    data = {"message":message}
+    r = requests.post("http://localhost:8000/chat_room/chats/"+str(uri)+"/messages/", data=data, headers=header)
+    
+    return JsonResponse(r.json())
 
 def del_all_chat_room(request):
-    ChatSession.objects.all().delete()
+    #ChatSession.objects.all().delete()
     return HttpResponse
