@@ -1,7 +1,7 @@
 """Views for the chat app."""
 
 from django.contrib.auth import get_user_model
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponse
 import requests
 from .models import (
     ChatSession, ChatSessionMember, ChatSessionMessage, deserialize_user
@@ -15,13 +15,13 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from notifications.utils import notify
 from notifications import default_settings as notifs_settings
 
-from django.shortcuts import render, resolve_url
+from django.shortcuts import render, resolve_url, redirect
 
 
 class ChatSessionView(APIView):
     """Manage Chat sessions."""
 
-    permission_classes = (permissions.IsAuthenticated,)
+    #permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         """create a new chat session."""
@@ -67,12 +67,12 @@ class ChatSessionMessageView(APIView):
     """Create/Get Chat session messages."""
     renderer_classes = [TemplateHTMLRenderer]
 
-    permission_classes = (permissions.IsAuthenticated,)
+    #permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         """return all messages in a chat session."""
         uri = kwargs['uri']
-
+        print(request.META)
         chat_session = ChatSession.objects.get(uri=uri)
         messages = [chat_session_message.to_json() 
             for chat_session_message in chat_session.messages.all()]
@@ -94,7 +94,7 @@ class ChatSessionMessageView(APIView):
         chat_session_message = ChatSessionMessage.objects.create(
             user=user, chat_session=chat_session, message=message
         )
-
+        #TODO MAKE SURE OF THIS
         notif_args = {
             'source': user,
             'source_display_name': user.get_full_name(),
@@ -130,4 +130,17 @@ def handle_create_new_chatroom(request):
     req = requests.post(url,headers=header).json()
     print(req)
     uri = req.get("uri", 0)
-    return HttpResponseRedirect(url + str(uri) + "/")
+    response = HttpResponseRedirect(url + str(uri) + "/messages/")
+    return response
+
+def join_chat(request):
+    #TODO
+    pass
+
+def send_message(request):
+    #TODO
+    pass
+
+def del_all_chat_room(request):
+    ChatSession.objects.all().delete()
+    return HttpResponse

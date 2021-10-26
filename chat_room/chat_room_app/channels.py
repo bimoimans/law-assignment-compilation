@@ -31,7 +31,7 @@ class BroadCastWebSocketChannel(BaseNotificationChannel):
         print("wtf")
         print(self.notification_kwargs)
         uri = self.notification_kwargs['extra_data']['room_name']
-
+        #TODO Set routing key bind dll
         channel.exchange_declare(exchange=uri, exchange_type='fanout')
         channel.basic_publish(exchange=uri, routing_key='', body=message)
 
