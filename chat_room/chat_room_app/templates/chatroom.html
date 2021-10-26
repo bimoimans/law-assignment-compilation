@@ -125,8 +125,6 @@ function WebSocketTest() {
           console.log('message received');
           const message_obj = JSON.parse(m.body);
           $('#chat_message').append("<br>".concat(message_obj.message).concat("</br>"));
-          //$('#jam').append(m.body);
-          //$('#jam').append("</b>");
         };
 
         client_display.connect('guest', 'guest', on_connect_display, on_error_display, '/');
@@ -137,9 +135,6 @@ function WebSocketTest() {
     }
 }
 // Attach a submit handler to the form
-
-
-
 </script>
 
 </body>
