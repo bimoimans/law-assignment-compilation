@@ -30,9 +30,9 @@
                 $('#jam').append("<br>".concat(m.body).concat("</br>"));
                 } else {
                   var link = document.getElementById("link");
-                  var server2 = "http://localhost:8080"
+                  var server2 = "http://localhost:8030/process_file"
                   var received = String(m.body).slice(1, -1)
-                  link.innerHTML = "link";
+                  link.innerHTML = "Click Here to Download";
                   link.setAttribute('href', server2.concat(received));
                 }
               };
